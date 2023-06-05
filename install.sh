@@ -18,7 +18,6 @@ fi
 append_to_shell_config=0
 
 for arg in "$@"
-dosf                                                            ffffggggggggggg
     case $arg in
         -r|--rc|-a|--auto|-c|--configure|-s|--setup|-p|--profile|-i|--init|-e|--env|-u|--update|-w|--write)
         append_to_shell_config=1
