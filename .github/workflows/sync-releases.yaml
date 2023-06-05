@@ -7,7 +7,7 @@ on:
 
 jobs:
   sync_releases:
-    name: "Sync release versions between `denoland/deno` and `lukechannings/deno-arm64`"
+    name: "Sync release versions between `denoland/deno` and `deno911/arm64`"
     runs-on: ubuntu-latest
     steps:
       - name: Compare latest releases
@@ -19,12 +19,12 @@ jobs:
           }
 
           DENOLAND_VERSION=$(get_latest_github_release "denoland/deno")
-          LUKECHANNINGS_VERSION=$(get_latest_github_release "lukechannings/deno-arm64")
+          DENO911_VERSION=$(get_latest_github_release "deno911/arm64")
 
           echo "denoland/deno version: $DENOLAND_VERSION"
-          echo "lukechannings/deno-arm64 version: $LUKECHANNINGS_VERSION"
+          echo "deno911/arm64 version: $DENO911_VERSION"
 
-          if [[ "$DENOLAND_VERSION" != "$LUKECHANNINGS_VERSION" ]]; then
+          if [[ "$DENOLAND_VERSION" != "$DENO911_VERSION" ]]; then
             echo "release_version=$DENOLAND_VERSION" >> $GITHUB_ENV
           fi
       - name: Release
@@ -32,7 +32,7 @@ jobs:
         if: ${{ env.release_version }}      
         with:
           script: |
-            // Create a new release in LukeChannings/deno-arm64 that matches the denoland/deno release.
+            // Create a new release in deno911/arm64 that matches the denoland/deno release.
             await github.rest.repos.createRelease({
               name: "${{ env.release_version }}",
               tag_name: "${{ env.release_version }}",
