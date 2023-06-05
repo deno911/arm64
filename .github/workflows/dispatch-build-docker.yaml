@@ -34,5 +34,5 @@ jobs:
           push: true
           build-args: VERSION=${{ github.event.inputs.version }}
           tags: |
-            lukechannings/deno:${{ github.event.inputs.version }}
-            lukechannings/deno:latest
+            deno911/deno:${{ github.event.inputs.version }}
+            deno911/deno:latest

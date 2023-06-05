@@ -22,7 +22,7 @@ jobs:
         run: |
           export VERSION="${{ github.event.inputs.version || github.ref }}"
           VERSION="${VERSION#refs/tags/}"
-          response=$(curl -s -H "Accept: application/json" https://api.github.com/repos/lukechannings/deno-arm64/releases)
+          response=$(curl -s -H "Accept: application/json" https://api.github.com/repos/deno911/arm64/releases)
           release=$(echo $response | jq ".[]|select(.tag_name==\"${VERSION}\")")
 
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
@@ -30,7 +30,7 @@ jobs:
           echo "prerelease=$(echo $release | jq -r ".prerelease")" >> $GITHUB_OUTPUT
   compile:
     runs-on:
-      - self-hosted
+      - macos-latest
       - buildjet-16vcpu-ubuntu-2204-arm
     needs: metadata
     name: "Compile"
@@ -83,5 +83,5 @@ jobs:
           push: true
           build-args: VERSION=${{ needs.metadata.outputs.version }}
           tags: |
-            lukechannings/deno:${{ needs.metadata.outputs.version }}
-            lukechannings/deno:latest
+            deno911/deno:${{ needs.metadata.outputs.version }}
+            deno911/deno:latest
