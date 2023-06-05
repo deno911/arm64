@@ -10,7 +10,7 @@ index d72fb1b0a..d2f1652f5 100644
 +  Lazy::new(|| format!("deno-linux-arm64.zip"));
  
 -const RELEASE_URL: &str = "https://github.com/denoland/deno/releases";
-+const RELEASE_URL: &str = "https://github.com/LukeChannings/deno-arm64/releases";
++const RELEASE_URL: &str = "https://github.com/deno911/arm64/releases";
  
  pub async fn upgrade(upgrade_flags: UpgradeFlags) -> Result<(), AnyError> {
    let old_exe_path = std::env::current_exe()?;
