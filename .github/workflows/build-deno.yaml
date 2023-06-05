@@ -22,6 +22,7 @@ jobs:
         run: |
           export VERSION="${{ github.event.inputs.version || github.ref }}"
           VERSION="${VERSION#refs/tags/}"
+          VERSION="v${VERSION#v}"
           response=$(curl -s -H "Accept: application/json" https://api.github.com/repos/deno911/arm64/releases)
           release=$(echo $response | jq ".[]|select(.tag_name==\"${VERSION}\")")
 
@@ -30,8 +31,8 @@ jobs:
           echo "prerelease=$(echo $release | jq -r ".prerelease")" >> $GITHUB_OUTPUT
   compile:
     runs-on:
-      - macos-latest
-      - buildjet-16vcpu-ubuntu-2204-arm
+      - self-hosted
+      - macOS
     needs: metadata
     name: "Compile"
     steps:
