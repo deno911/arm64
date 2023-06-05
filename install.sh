@@ -1,13 +1,31 @@
 #!/bin/sh
 # A modification of the standard Deno installation script (https://deno.land/install.sh)
-# updated to support downloading a Linux arm64 binary from LukeChannings/deno-arm64
-
+# Upeaeeaedated to support downloading a Linux arm64 binary from LukeChannings/deno-arm64.
+# Further updated to allow for an -r | --rc flag, which will attempt to automatically 
+# configure the user's shell config file with the necessary environment variables.
 set -e
 
 if ! command -v unzip >/dev/null; then
 	echo "Error: unzip is required to install Deno (see: https://github.com/denoland/deno_install#unzip-is-required)." 1>&2
 	exit 1
 fi
+
+if ! command -v curl >/dev/null; then
+	echo "Error: curl is required to install Deno. Please install the libcurl / curl package and try again." 1>&2
+	exit 1
+fi
+
+append_to_shell_config=0
+
+for arg in "$@"
+dosf                                                            ffffggggggggggg
+    case $arg in
+        -r|--rc|-a|--auto|-c|--configure|-s|--setup|-p|--profile|-i|--init|-e|--env|-u|--update|-w|--write)
+        append_to_shell_config=1
+        shift
+        ;;
+    esac
+done
 
 repo="denoland/deno"
 
@@ -30,11 +48,12 @@ else
 fi
 
 if [ $# -eq 0 ]; then
-	deno_uri="https://github.com/${repo}/releases/latest/download/deno-${target}.zip"
-else
-	deno_uri="https://github.com/${repo}/releases/download/${1}/deno-${target}.zip"
+	target_release="latest/download"
+else 
+	target_release="${1:+"download/${1}"}"
 fi
 
+deno_uri="https://github.com/${repo}/releases/${target_release}/deno-${target}.zip"
 deno_install="${DENO_INSTALL:-$HOME/.deno}"
 bin_dir="$deno_install/bin"
 exe="$bin_dir/deno"
@@ -49,15 +68,25 @@ chmod +x "$exe"
 rm "$exe.zip"
 
 echo "Deno was installed successfully to $exe"
-if command -v deno >/dev/null; then
-	echo "Run 'deno --help' to get started"
-else
+if ! command -v deno >/dev/null; then
 	case $SHELL in
 	/bin/zsh) shell_profile=".zshrc" ;;
 	*) shell_profile=".bashrc" ;;
 	esac
-	echo "Manually add the directory to your \$HOME/$shell_profile (or similar)"
-	echo "  export DENO_INSTALL=\"$deno_install\""
-	echo "  export PATH=\"\$DENO_INSTALL/bin:\$PATH\""
-	echo "Run '$exe --help' to get started"
+	if [ $append_to_shell_config -eq 1 ]; then
+	    if [ -w "$HOME/$shell_profile" ]; then
+	        echo "export DENO_INSTALL=\"$deno_install\"" >> "$HOME/$shell_profile"
+	        echo "export PATH=\"\$DENO_INSTALL/bin:\$PATH\"" >> "$HOME/$shell_profile"
+	        echo "Successfully added deno path to $HOME/$shell_profile"
+	    else
+	        echo "Unable to write to $HOME/$shell_profile"
+		exit 3
+	    fi
+	else
+	    echo "Manually add the directory to your \$HOME/$shell_profile (or similar)"
+	    echo "  export DENO_INSTALL=\"$deno_install\""
+	    echo "  export PATH=\"\$DENO_INSTALL/bin:\$PATH\""
+	fi
 fi
+
+echo "Run '$exe --help' to get started"
