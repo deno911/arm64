@@ -70,8 +70,11 @@ rm "$exe.zip"
 echo "Deno was installed successfully to $exe"
 if ! command -v deno >/dev/null; then
 	case $SHELL in
-	/bin/zsh) shell_profile=".zshrc" ;;
-	*) shell_profile=".bashrc" ;;
+	*/bin/zsh) shell_profile=".zshrc" ;;
+	*/bin/bash) shell_profile=".bashrc" ;;
+  */bin/tcsh) shell_profile=".tcshrc" ;;
+  */bin/fish) shell_profile=".config/fish/config.fish" ;;
+  *) shell_profile=".profile" ;;
 	esac
 	if [ $append_to_shell_config -eq 1 ]; then
 	    if [ -w "$HOME/$shell_profile" ]; then
